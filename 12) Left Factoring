@@ -1,0 +1,32 @@
+#include <stdio.h>
+#include <string.h>
+void eliminateLeftFactoring(char production[]) {
+    char nonTerminal = production[0];
+    int i = 3;
+    while (production[i] == nonTerminal) {
+        i++;
+    }
+    if (production[i] == '|') {
+        printf("Left factoring detected.\n");
+        char commonPrefix[50];
+        int j = 0;
+        i = 3;
+        while (production[i] == nonTerminal) {
+            commonPrefix[j++] = nonTerminal;
+            i++;
+        }
+        commonPrefix[j] = '\0';
+        printf("Modified productions:\n");
+        printf("%c -> %s%c'\n", nonTerminal, commonPrefix, nonTerminal);
+        printf("%c' -> %s | e\n", nonTerminal, &production[i]);
+    } else {
+        printf("No left factoring detected.\n");
+    }
+}
+int main() {
+    char production[50];
+    printf("Enter a production: ");
+    scanf("%s", production);
+    eliminateLeftFactoring(production);
+    return 0;
+}
