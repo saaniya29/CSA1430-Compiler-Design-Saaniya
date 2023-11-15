@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_SIZE 100
+typedef struct {
+    char left;
+    char right[MAX_SIZE];
+} Production;
+int isTerminal(char ch) {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+int isNonTerminal(char ch) {
+    return ch >= 'A' && ch <= 'Z';
+}
+int findIndex(char symbol, char array[]) {
+    int index = -1;
+    for (int i = 0; array[i] != '\0'; ++i) {
+        if (array[i] == symbol) {
+            index = i;
+            break;
+        }
+    }
+    return index;
+}
+void slrParser(char input[], Production productions[], char parsingTable[][MAX_SIZE]) {
+    char stack[MAX_SIZE];
+    int top = -1;
+    stack[++top] = '0';
+    printf("Stack: %s\nInput: %s\n", stack, input);
+    int inputIndex = 0;
+    char currentSymbol = input[inputIndex];
+    while (1) {
+        char currentState = stack[top];
+        int colIndex = findIndex(currentSymbol, parsingTable[0]);
+        int rowIndex = findIndex(currentState, parsingTable[rowIndex]);
+        char action = parsingTable[rowIndex][colIndex];
+        if (action == 'e') {
+            printf("Error: Invalid input symbol %c\n", currentSymbol);
+            break;
+        } else if (action == 'a') {
+            printf("Accepted!\n");
+            break;
+        } else if (action == 's' || action == 'r') {
+            int nextState = atoi(&action);
+            if (action == 'r') {
+            } else {
+                stack[++top] = currentSymbol;
+                stack[++top] = nextState + '0';
+                currentSymbol = input[++inputIndex];
+            }
+        }
+        printf("Stack: %s\nInput: %s\n", stack, &input[inputIndex]);
+    }
+}
+int main() {
+    Production productions[] = {
+        {'S', "L=R"},
+        {'L', "*R"},
+        {'L', "i"},
+        {'R', "L"}
+    };
+    char parsingTable[][MAX_SIZE] = {
+        {' ', 'i', '=', '+', '*', '$'},
+        {'0', 's', ' ', ' ', ' ', ' '},
+        {'1', ' ', 's', ' ', ' ', 'a'},
+        {'2', 'r', 'r', 's', 'r', 'r'},
+        {'3', ' ', ' ', 'a', ' ', 'a'}
+    };
+    char input[MAX_SIZE];
+    printf("Enter the input string: ");
+    scanf("%s", input);
+    slrParser(input, productions, parsingTable);
+    return 0;
+}
