@@ -1,0 +1,52 @@
+#include <stdio.h>
+#include <string.h>
+#define MAX_SIZE 100
+int isTerminal(char ch) {
+    return (ch >= 'a' && ch <= 'z') || (ch >= 'A' && ch <= 'Z');
+}
+void predictiveParse(char input[], char production[][MAX_SIZE], char startSymbol) {
+    int len = strlen(input);
+    int i = 0;  
+    char stack[MAX_SIZE];
+    int top = -1;
+    stack[++top] = startSymbol;
+    printf("Stack: %s\nInput: %s\n", stack, &input[i]);
+    while (top != -1) {
+        char X = stack[top--];
+        if (isTerminal(X)) {
+            if (X == input[i]) {
+                i++;
+            } else {
+                printf("Error: Mismatch! Expected %c, found %c\n", X, input[i]);
+                return;
+            }
+        } else {  
+            for (int j = strlen(production[X - 'A']) - 1; j >= 0; j--) {
+                if (production[X - 'A'][j] != 'e') {  
+                    stack[++top] = production[X - 'A'][j];
+                }
+            }
+        }
+        printf("Stack: %s\nInput: %s\n", stack, &input[i]);
+    }
+    if (i == len) {
+        printf("Successful parsing!\n");
+    } else {
+        printf("Error: Incomplete parsing! Input not fully consumed.\n");
+    }
+}
+int main() {
+    char production[][MAX_SIZE] = {
+        "E->TA",
+        "A->+TA|e",
+        "T->FB",
+        "B->*FB|e",
+        "F->(E)|i"
+    };
+    char startSymbol = 'E';
+    char input[MAX_SIZE];
+    printf("Enter the input string: ");
+    scanf("%s", input);
+    predictiveParse(input, production, startSymbol);
+    return 0;
+}
