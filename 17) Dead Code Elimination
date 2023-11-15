@@ -1,0 +1,27 @@
+#include <stdio.h>
+#include <stdbool.h>
+bool isDeadCode(char codeBlock) {
+    return codeBlock == 'A' || codeBlock == 'B' || codeBlock == 'C';
+}
+void eliminateDeadCode(char program[]) {
+    int i = 0;
+    while (program[i] != '\0') {
+        char currentBlock = program[i];
+        if (!isDeadCode(currentBlock)) {
+            printf("%c", currentBlock);
+        }
+        i++;
+    }
+}
+int main() {
+    char inputProgram[] = "if (condition) {   // Code Block A\n"
+                          "    // Code Block B\n"
+                          "} else {           // Code Block C\n"
+                          "    // Code Block D\n"
+                          "}";
+
+    printf("Original Program:\n%s\n\n", inputProgram);
+    printf("After Dead Code Elimination:\n");
+    eliminateDeadCode(inputProgram);
+    return 0;
+}
