@@ -1,0 +1,38 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+typedef struct {
+    char* variable;
+    char* expression;
+} Expression;
+int areExpressionsEqual(Expression* expr1, Expression* expr2) {
+    return strcmp(expr1->expression, expr2->expression) == 0;
+}
+void eliminateCommonSubexpressions(Expression expressions[], int numExpressions) {
+    for (int i = 0; i < numExpressions; ++i) {
+        for (int j = i + 1; j < numExpressions; ++j) {
+            if (areExpressionsEqual(&expressions[i], &expressions[j])) {
+                // Replace common subexpression with a temporary variable
+                printf("%s = %s;\n", expressions[j].variable, expressions[j].expression);
+                expressions[j].variable = expressions[i].variable;
+            }
+        }
+    }
+}
+int main() {
+    // Sample expressions
+    Expression expressions[] = {
+        {"temp1", "a + b"},
+        {"temp2", "c * d"},
+        {"temp3", "a + b"},
+        {"temp4", "e - f"}
+    };
+    int numExpressions = sizeof(expressions) / sizeof(Expression);
+    printf("Original Expressions:\n");
+    for (int i = 0; i < numExpressions; ++i) {
+        printf("%s = %s;\n", expressions[i].variable, expressions[i].expression);
+    }
+    printf("\nAfter Common Subexpression Elimination:\n");
+    eliminateCommonSubexpressions(expressions, numExpressions);
+    return 0;
+}
