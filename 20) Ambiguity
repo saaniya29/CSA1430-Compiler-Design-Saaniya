@@ -1,0 +1,42 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#define MAX_SIZE 100
+typedef struct {
+    char left;
+    char right[MAX_SIZE];
+} Production;
+int isNonTerminal(char ch) {
+    return ch >= 'A' && ch <= 'Z';
+}
+int hasLeftRecursion(Production productions[], int numProductions, char nonTerminal) {
+    for (int i = 0; i < numProductions; ++i) {
+        if (productions[i].left == nonTerminal && productions[i].right[0] == nonTerminal) {
+            return 1;  // Left recursion found
+        }
+    }
+    return 0;  // No left recursion
+}
+int isGrammarAmbiguous(Production productions[], int numProductions) {
+    for (int i = 0; i < numProductions; ++i) {
+        char nonTerminal = productions[i].left;
+        if (hasLeftRecursion(productions, numProductions, nonTerminal)) {
+            return 1;  // Ambiguity found
+        }
+    }
+    return 0;  //No ambiiguity found
+}
+int main() {
+    Production productions[] = {
+        {'S', "S+S"},
+        {'S', "S*S"},
+        {'S', "a"}
+    };
+    int numProductions = sizeof(productions) / sizeof(Production);
+    if (isGrammarAmbiguous(productions, numProductions)) {
+        printf("The grammar is ambiguous.\n");
+    } else {
+        printf("The grammar is not ambiguous.\n");
+    }
+    return 0;
+}
